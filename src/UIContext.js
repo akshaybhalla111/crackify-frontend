@@ -15,7 +15,7 @@ export const UIProvider = ({ children }) => {
   const fetchSubscriptionStatus = async () => {
     if (!auth) return;
     try {
-      const response = await fetch('http://localhost:8000/subscription_status', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/subscription_status`, {
         headers: { 'Authorization': `Bearer ${auth}` }
       });
       if (!response.ok) throw new Error('Failed to fetch subscription status');

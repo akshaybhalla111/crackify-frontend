@@ -11,7 +11,7 @@ function PaymentHistoryPage() {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await fetch('http://localhost:8000/payment_history', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/payment_history`, {
           headers: { Authorization: `Bearer ${auth}` }
         });
         const data = await response.json();

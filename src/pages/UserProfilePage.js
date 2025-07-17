@@ -36,14 +36,14 @@ function UserProfilePage() {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const subRes = await fetch('http://localhost:8000/subscription_status', {
+        const subRes = await fetch(`${import.meta.env.VITE_API_URL}/subscription_status`, {
           headers: { Authorization: `Bearer ${auth}` }
         });
         const subData = await subRes.json();
         setSubscriptionStatus(subData.subscription_status || 'free');
         setLiveSessionsRemaining(subData.live_sessions_remaining || 0);
 
-        const paymentRes = await fetch('http://localhost:8000/payment_history', {
+        const paymentRes = await fetch(`${import.meta.env.VITE_API_URL}/payment_history`, {
           headers: { Authorization: `Bearer ${auth}` }
         });
         const payments = await paymentRes.json();

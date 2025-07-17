@@ -17,7 +17,7 @@ function SessionsPage() {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const response = await fetch('http://localhost:8000/sessions', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/sessions`, {
           headers: { Authorization: `Bearer ${auth}` }
         });
         const data = await response.json();
@@ -34,7 +34,7 @@ function SessionsPage() {
 
   const handleViewSession = async (sessionId) => {
     try {
-      const response = await fetch(`http://localhost:8000/sessions/${sessionId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/sessions/${sessionId}`, {
         headers: { Authorization: `Bearer ${auth}` }
       });
       const data = await response.json();
@@ -47,13 +47,13 @@ function SessionsPage() {
 
   const handleDownloadSession = (sessionId) => {
     const token = encodeURIComponent(auth);
-    const downloadUrl = `http://localhost:8000/download_session/${sessionId}?token=${token}`;
+    const downloadUrl = `${import.meta.env.VITE_API_URL}/download_session/${sessionId}?token=${token}`;
     window.open(downloadUrl, '_blank');
   };
 
   const handleDeleteSession = async (sessionId) => {
     try {
-      await fetch(`http://localhost:8000/delete_session/${sessionId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/delete_session/${sessionId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${auth}` }
       });

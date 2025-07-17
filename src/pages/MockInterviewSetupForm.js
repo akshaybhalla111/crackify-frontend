@@ -30,7 +30,7 @@ function MockInterviewSetupForm() {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/setup_interview', formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/setup_interview`, formData, {
         headers: { Authorization: `Bearer ${auth}` }
       });
 

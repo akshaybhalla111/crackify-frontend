@@ -113,7 +113,7 @@ function MockInterviewPage() {
     const formattedQuestions = questions.map(q => ({ question: q.text, answer: q.answer || currentAnswer }));
 
     if (setupData?.session_id) {
-      await fetch('http://localhost:8000/save_session', {
+      await fetch(`${import.meta.env.VITE_API_URL}/save_session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ session_id: setupData.session_id, questions: formattedQuestions })
@@ -148,7 +148,7 @@ function MockInterviewPage() {
     let questionType = 'Scenario';
 
     try {
-      const classifyResponse = await fetch('http://localhost:8000/classify_question', {
+      const classifyResponse = await fetch(`${import.meta.env.VITE_API_URL}/classify_question`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ question: questionText })
@@ -245,7 +245,7 @@ function MockInterviewPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/generate_answer', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/generate_answer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ session_id: setupData.session_id, question: prompt })
@@ -274,7 +274,7 @@ function MockInterviewPage() {
         }
       }
 
-      await fetch('http://localhost:8000/save_session', {
+      await fetch(`${import.meta.env.VITE_API_URL}/save_session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ session_id: setupData.session_id, questions: [{ question: questionText, answer: accumulatedAnswer }] })

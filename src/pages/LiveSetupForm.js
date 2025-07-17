@@ -46,7 +46,7 @@ function LiveSetupFormPage() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/setup_interview', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/setup_interview`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${auth}` },
         body: formData

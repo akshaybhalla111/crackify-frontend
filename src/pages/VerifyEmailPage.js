@@ -10,7 +10,7 @@ function VerifyEmailPage() {
   useEffect(() => {
     const verify = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/verify-email/${token}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/verify-email/${token}`);
         if (response.ok) {
           setStatus('success');
         } else {
