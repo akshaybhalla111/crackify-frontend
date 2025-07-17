@@ -1,0 +1,35 @@
+/* src/styles/GlobalStyles.css */
+
+.answer-container {
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333333;
+  white-space: pre-wrap; /* preserves line breaks */
+}
+
+.summarized-question {
+  font-family: 'Roboto', 'Arial', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #444444;
+  margin-bottom: 12px;
+}
+
+.code-block {
+  background-color: #f5f5f5;
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.copy-button {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}

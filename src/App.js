@@ -1,24 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material'; // ✅ Import MUI theme provider
+import { AuthProvider } from './AuthContext';
+import { UIProvider } from './UIContext';
+import AnimatedRoutes from './AnimatedRoutes';
+import theme from './theme'; // ✅ Import your custom theme
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <UIProvider>
+          <Router>
+            <AnimatedRoutes />
+          </Router>
+        </UIProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
