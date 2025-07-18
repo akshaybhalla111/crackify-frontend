@@ -21,10 +21,8 @@ const Dashboard = () => {
       description: "Upload your resume to get personalized interview questions",
       icon: "📄",
       action: "Upload",
-      onClick: () => {
-        setComingSoonFeature('Upload Resume');
-        setComingSoonOpen(true);
-      }
+      type: "coming-soon",
+      featureName: "Upload Resume"
     },
     {
       title: "Mock Interview",
@@ -113,7 +111,18 @@ const Dashboard = () => {
                 <Typography variant="body2" color="text.secondary" mt={1} mb={2}>
                   {step.description}
                 </Typography>
-                <Button variant="contained" size="small">
+                <Button
+                  onClick={() => {
+                    if (step.type === 'coming-soon') {
+                      setComingSoonFeature(step.featureName);
+                      setComingSoonOpen(true);
+                    } else if (step.route) {
+                      navigate(step.route);
+                    }
+                  }}
+                  variant="contained"
+                  size="small"
+                >
                   {step.action}
                 </Button>
               </CardContent>
