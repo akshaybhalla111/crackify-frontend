@@ -16,8 +16,6 @@ import './AuthPage.css';
 import { API_BASE_URL } from "../config";
 
 
-console.log("✅ API_BASE_URL in AuthPage:", API_BASE_URL);
-
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
