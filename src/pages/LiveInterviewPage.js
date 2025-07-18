@@ -9,7 +9,7 @@ import InterviewSetupModal from '../components/InterviewSetupModal';
 import LiveInterviewPreparationModal from '../components/LiveInterviewPreparationModal';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../config";
-import { API_BASE } from "../config";
+import { WS_BASE_URL } from "../config";
 
 const buttonClickSound = new Audio('/click.mp3');
 
