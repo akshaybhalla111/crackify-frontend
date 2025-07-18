@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -7,9 +7,13 @@ import {
   Button
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
+  const [comingSoonFeature, setComingSoonFeature] = useState('');
+
 
   const steps = [
     {
@@ -17,7 +21,10 @@ const Dashboard = () => {
       description: "Upload your resume to get personalized interview questions",
       icon: "📄",
       action: "Upload",
-      route: "/upload-resume"
+      onClick: () => {
+        setComingSoonFeature('Upload Resume');
+        setComingSoonOpen(true);
+      }
     },
     {
       title: "Mock Interview",
@@ -182,7 +189,14 @@ const Dashboard = () => {
           Take your first AI mock interview practice session today
         </Typography>
         <Box mt={3}>
-          <Button variant="outlined" sx={{ color: 'white', borderColor: 'white', mr: 2 }}>
+          <Button
+            variant="outlined"
+            sx={{ color: 'white', borderColor: 'white', mr: 2 }}
+            onClick={() => {
+              setComingSoonFeature('Watch Demo');
+              setComingSoonOpen(true);
+            }}
+          >
             Watch Demo
           </Button>
           <Button
@@ -193,6 +207,19 @@ const Dashboard = () => {
           </Button>
         </Box>
       </Box>
+      <Dialog open={comingSoonOpen} onClose={() => setComingSoonOpen(false)}>
+        <DialogTitle>{comingSoonFeature} – Coming Soon 🚧</DialogTitle>
+        <DialogContent>
+          <Typography>
+            This feature is under development and will be available in a future update. Thanks for your patience!
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setComingSoonOpen(false)} autoFocus>
+            Got it!
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
