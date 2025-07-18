@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Modal, TextField, MenuItem, Typography, CircularProgress } from '@mui/material';
 import axios from 'axios';
-import { API_BASE_URL } from "../../config";
+import { API_BASE_URL } from "../config";
 const languages = ['English', 'Hindi'];
 
 function InterviewSetupModal({ open, onClose, onSetupComplete, auth }) {
