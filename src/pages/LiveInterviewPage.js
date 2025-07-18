@@ -9,6 +9,7 @@ import InterviewSetupModal from '../components/InterviewSetupModal';
 import LiveInterviewPreparationModal from '../components/LiveInterviewPreparationModal';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../config";
+import { API_BASE } from "../config";
 
 const buttonClickSound = new Audio('/click.mp3');
 
@@ -350,7 +351,7 @@ function LiveInterviewPage() {
 
       source.connect(worklet).connect(audioCtx.destination);
 
-      const socket = new WebSocket('ws://localhost:8000/audio_stream');
+      const socket = new WebSocket(`${WS_BASE_URL}/audio_stream`);
       socket.binaryType = 'arraybuffer';
       socketRef.current = socket;
 
