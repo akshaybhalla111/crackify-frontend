@@ -1,6 +1,7 @@
 // src/UIContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { API_BASE_URL } from "./config";
 
 const UIContext = createContext();
 
@@ -15,7 +16,7 @@ export const UIProvider = ({ children }) => {
   const fetchSubscriptionStatus = async () => {
     if (!auth) return;
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/subscription_status`, {
+      const response = await fetch(`${API_BASE_URL}/subscription_status`, {
         headers: { 'Authorization': `Bearer ${auth}` }
       });
       if (!response.ok) throw new Error('Failed to fetch subscription status');

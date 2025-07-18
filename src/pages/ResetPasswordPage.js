@@ -9,6 +9,7 @@ import {
   Alert,
 } from '@mui/material';
 import './AuthPage.css'; // ✅ Reuse login/register styling
+import { API_BASE_URL } from "../config";
 
 function ResetPasswordPage() {
   const [newPassword, setNewPassword] = useState('');
@@ -46,7 +47,7 @@ function ResetPasswordPage() {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/reset_password`, {
+      const response = await fetch(`${API_BASE_URL}/reset_password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, new_password: newPassword }),

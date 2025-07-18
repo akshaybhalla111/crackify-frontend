@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Button } from '@mui/material';
+import { API_BASE_URL } from "../config";
 
 function VerifyEmailPage() {
   const { token } = useParams();
@@ -10,7 +11,7 @@ function VerifyEmailPage() {
   useEffect(() => {
     const verify = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/verify-email/${token}`);
+        const response = await fetch(`${API_BASE_URL}/verify-email/${token}`);
         if (response.ok) {
           setStatus('success');
         } else {

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useUI } from '../UIContext';
+import { API_BASE_URL } from "../config";
 
 function SubscriptionPage() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function SubscriptionPage() {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/subscription_status`, {
+      const response = await fetch(`${API_BASE_URL}/subscription_status`, {
         headers: { 'Authorization': `Bearer ${auth}` }
       });
       const data = await response.json();
@@ -88,7 +89,7 @@ function SubscriptionPage() {
     if (plan.total === 0) return;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/create_order`, {
+      const response = await fetch(`${API_BASE_URL}/create_order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: plan.total })  // backend multiplies by 100
@@ -105,7 +106,7 @@ function SubscriptionPage() {
         order_id: order_id,
         handler: async (paymentResponse) => {
           try {
-            const verifyResponse = await fetch(`${import.meta.env.VITE_API_URL}/verify_payment`, {
+            const verifyResponse = await fetch(`${API_BASE_URL}/verify_payment`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
               body: JSON.stringify({

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import LiveInterviewPage from './pages/LiveInterviewPage';
 import { Box, CircularProgress, Typography } from '@mui/material';
+import { API_BASE_URL } from "./config";
 
 function LiveInterviewGuard() {
   const { auth } = useAuth();
@@ -14,7 +15,7 @@ function LiveInterviewGuard() {
   useEffect(() => {
     const checkAndDeductSession = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/use_live_session`, {
+        const response = await fetch(`${API_BASE_URL}/use_live_session`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${auth}` }
         });

@@ -7,6 +7,7 @@ import AnswerBox from '../components/AnswerBox';
 import InterviewSetupModal from '../components/InterviewSetupModal';
 import InterviewPreparationModal from '../components/InterviewPreparationModal';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from "../config";
 
 const buttonClickSound = new Audio('/click.mp3');
 
@@ -113,7 +114,7 @@ function MockInterviewPage() {
     const formattedQuestions = questions.map(q => ({ question: q.text, answer: q.answer || currentAnswer }));
 
     if (setupData?.session_id) {
-      await fetch(`${import.meta.env.VITE_API_URL}/save_session`, {
+      await fetch(`${API_BASE_URL}/save_session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ session_id: setupData.session_id, questions: formattedQuestions })
@@ -148,7 +149,7 @@ function MockInterviewPage() {
     let questionType = 'Scenario';
 
     try {
-      const classifyResponse = await fetch(`${import.meta.env.VITE_API_URL}/classify_question`, {
+      const classifyResponse = await fetch(`${API_BASE_URL}/classify_question`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ question: questionText })
@@ -245,7 +246,7 @@ function MockInterviewPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/generate_answer`, {
+      const response = await fetch(`${API_BASE_URL}/generate_answer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ session_id: setupData.session_id, question: prompt })
@@ -274,7 +275,7 @@ function MockInterviewPage() {
         }
       }
 
-      await fetch(`${import.meta.env.VITE_API_URL}/save_session`, {
+      await fetch(`${API_BASE_URL}/save_session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth}` },
         body: JSON.stringify({ session_id: setupData.session_id, questions: [{ question: questionText, answer: accumulatedAnswer }] })

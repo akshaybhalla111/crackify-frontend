@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Modal, TextField, MenuItem, Typography, CircularProgress } from '@mui/material';
 import axios from 'axios';
-
+import { API_BASE_URL } from "../../config";
 const languages = ['English', 'Hindi'];
 
 function InterviewSetupModal({ open, onClose, onSetupComplete, auth }) {
@@ -24,7 +24,7 @@ function InterviewSetupModal({ open, onClose, onSetupComplete, auth }) {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/setup_interview`, formData, {
+      const response = await axios.post(`${API_BASE_URL}/setup_interview`, formData, {
         headers: { Authorization: `Bearer ${auth}` }
       });
       onSetupComplete(response.data); // Pass session info to parent

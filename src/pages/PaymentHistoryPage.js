@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { Box, Typography, CircularProgress, Paper } from '@mui/material';
+import { API_BASE_URL } from "../config";
 
 function PaymentHistoryPage() {
   const { auth } = useAuth();
@@ -11,7 +12,7 @@ function PaymentHistoryPage() {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/payment_history`, {
+        const response = await fetch(`${API_BASE_URL}/payment_history`, {
           headers: { Authorization: `Bearer ${auth}` }
         });
         const data = await response.json();

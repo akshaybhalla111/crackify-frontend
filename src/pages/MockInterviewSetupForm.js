@@ -4,6 +4,7 @@ import { Box, Button, Typography, TextField, MenuItem, CircularProgress } from '
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from "../config";
 
 const languages = ['English', 'Hindi'];
 
@@ -30,7 +31,7 @@ function MockInterviewSetupForm() {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/setup_interview`, formData, {
+      const response = await axios.post(`${API_BASE_URL}/setup_interview`, formData, {
         headers: { Authorization: `Bearer ${auth}` }
       });
 

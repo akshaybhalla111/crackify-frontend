@@ -5,6 +5,7 @@ import { Box, Typography, TextField, Button, MenuItem, CircularProgress } from '
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useUI } from '../UIContext';
+import { API_BASE_URL } from "../config";
 
 const languages = ['English', 'Hindi'];
 
@@ -46,7 +47,7 @@ function LiveSetupFormPage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/setup_interview`, {
+      const response = await fetch(`${API_BASE_URL}/setup_interview`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${auth}` },
         body: formData

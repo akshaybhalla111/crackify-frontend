@@ -13,6 +13,8 @@ import {
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import './AuthPage.css';
+import { API_BASE_URL } from "../config";
+
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -61,12 +63,12 @@ function AuthPage() {
         formData.append('username', email);
         formData.append('password', password);
 
-        const res = await axios.post('https://crackify-backend.onrender.com/login', formData);
+        const res = await axios.post(`${API_BASE_URL}/login`, formData);
         setAuth(res.data.access_token);
         setUserEmail(email);
         navigate('/dashboard');
       } else {
-        await axios.post('https://crackify-backend.onrender.com/register', { email, password });
+        await axios.post(`${API_BASE_URL}/register`, { email, password });
         setIsLogin(true);
         setToast({ open: true, msg: 'Registered successfully! Please log in.', severity: 'success' });
       }
@@ -81,7 +83,7 @@ function AuthPage() {
       const decoded = jwtDecode(credentialResponse.credential);
       const email = decoded.email;
 
-      const res = await axios.post('https://crackify-backend.onrender.com/login_google', { email });
+      const res = await axios.post(`${API_BASE_URL}/login_google`, { email });
       setAuth(res.data.access_token);
       setUserEmail(email);
       navigate('/dashboard');
@@ -96,7 +98,7 @@ function AuthPage() {
       return;
     }
     try {
-      await axios.post('https://crackify-backend.onrender.com/send_reset_link', { email: resetEmail });
+      await axios.post(`${API_BASE_URL}/send_reset_link`, { email: resetEmail });
       setToast({ open: true, msg: '✅ Reset link sent to your email.', severity: 'success' });
       setTimeout(() => {
         setShowForgot(false);
