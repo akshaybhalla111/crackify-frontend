@@ -42,7 +42,7 @@ function MockInterviewPage() {
   const reconnectAttemptsRef = useRef(0);
   const readerRef = useRef(null);
   const timerIntervalRef = useRef(null);
-  const sessionEndedRef = useRef(false); // ✅ New flag to prevent reconnection
+  const sessionEndedRef = useRef(false); // ✅ New flag prevent reconnection
   const hasEndedRef = useRef(false);
 
 
