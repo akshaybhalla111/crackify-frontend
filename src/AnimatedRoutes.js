@@ -46,7 +46,7 @@ function AnimatedRoutes() {
       <Box sx={{ marginLeft: auth && sidebarVisible ? '240px' : '0px', padding: '20px' }}>
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-            <Route path="/" element={!auth ? <PageWrapper><LandingPage /></PageWrapper> : <Navigate to="/dashboard" />} />
+            <Route path="/" element={!auth ? <PageWrapper><AuthPage /></PageWrapper> : <Navigate to="/dashboard" />} />
 
             {/* ✅ Replace old login/register with new unified auth route */}
             <Route path="/auth" element={!auth ? <PageWrapper><AuthPage /></PageWrapper> : <Navigate to="/dashboard" />} />
