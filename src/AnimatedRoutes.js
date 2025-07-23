@@ -59,7 +59,7 @@ function AnimatedRoutes() {
         <div className="px-5 pt-6 pb-5">
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
-              <Route path="/" element={!auth ? <PageWrapper><LandingPage /></PageWrapper> : <Navigate to="/dashboard" />} />
+              <Route path="/" element={!auth ? <PageWrapper><AuthPage /></PageWrapper> : <Navigate to="/dashboard" />} />
 
               {/* ✅ Replace old login/register with new unified auth route */}
               <Route path="/auth" element={!auth ? <PageWrapper><AuthPage /></PageWrapper> : <Navigate to="/dashboard" />} />
