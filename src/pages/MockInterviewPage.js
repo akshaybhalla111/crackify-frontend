@@ -31,7 +31,7 @@ function MockInterviewPage() {
   const [shortcutOverlayOpen, setShortcutOverlayOpen] = useState(false);
   const [trialEnded, setTrialEnded] = useState(false);
   const [trialModalOpen, setTrialModalOpen] = useState(false);
-  const [trialTimeLeft, setTrialTimeLeft] = useState(subscriptionStatus === 'free' ? 60 : 600);
+  const [trialTimeLeft, setTrialTimeLeft] = useState(600);
 
   const videoRef = useRef(null);
   const scrollBottomRef = useRef(null);
@@ -349,7 +349,7 @@ function MockInterviewPage() {
 
   const startInterviewWithAudio = async () => {
     await cleanup();
-    setTrialTimeLeft(subscriptionStatus === 'free' ? 60 : 600);
+    setTrialTimeLeft(600);
     sessionEndedRef.current = false;
 
     try {

@@ -7,6 +7,8 @@ import {
   Button,
   Snackbar,
   Alert,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import './AuthPage.css'; // ✅ Reuse login/register styling
 import { API_BASE_URL } from "../config";
@@ -20,7 +22,10 @@ function ResetPasswordPage() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const token = query.get('token');
-  
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const isValidPassword = (pwd) => {
     const hasLetters = /[a-zA-Z]/.test(pwd);
     const hasNumbers = /[0-9]/.test(pwd);
@@ -36,7 +41,7 @@ function ResetPasswordPage() {
       setToast({ open: true, msg: 'Passwords do not match.', severity: 'error' });
       return;
     }
-    
+
     if (!isValidPassword(newPassword)) {
       setToast({
         open: true,
@@ -60,7 +65,7 @@ function ResetPasswordPage() {
 
       setToast({ open: true, msg: '✅ Password reset successful!', severity: 'success' });
       setTimeout(() => {
-        navigate('/auth'); // or '/login'
+        navigate('/auth');
       }, 3000);
     } catch (err) {
       setToast({ open: true, msg: err.message, severity: 'error' });
@@ -69,8 +74,23 @@ function ResetPasswordPage() {
 
   return (
     <div className="auth-page-body">
-      <div className="container">
-        <div className="left-panel">
+      <div
+        className="container"
+        style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: 'center',
+          padding: isMobile ? '1.5rem' : '2rem',
+        }}
+      >
+        <div
+          className="left-panel"
+          style={{
+            width: isMobile ? '100%' : '50%',
+            textAlign: isMobile ? 'center' : 'left',
+            marginBottom: isMobile ? '2rem' : 0,
+          }}
+        >
           <div className="logo-only">
             <div className="logo-wrapper">
               <img src="/logo.jpg" alt="Crackify Logo" className="auth-logo-img" />
@@ -84,9 +104,15 @@ function ResetPasswordPage() {
           </div>
         </div>
 
-        <div className="right-panel">
-          <Box sx={{ maxWidth: 400, mx: 'auto' }}>
-            <Typography variant="h4" gutterBottom>Reset Password</Typography>
+        <div
+          className="right-panel"
+          style={{
+            width: isMobile ? '100%' : '50%',
+            padding: isMobile ? '0 1rem' : '0',
+          }}
+        >
+          <Box sx={{ maxWidth: 400, mx: 'auto', px: { xs: 1, sm: 0 } }}>
+            <Typography variant={isMobile ? 'h5' : 'h4'} gutterBottom>Reset Password</Typography>
             <Typography variant="body2" sx={{ mb: 3 }}>
               Set a new password to regain access to your account.
             </Typography>
