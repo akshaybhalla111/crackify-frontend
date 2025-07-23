@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, CardActions, Button, Grid } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Grid,
+  useTheme,
+  useMediaQuery
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
@@ -14,11 +24,11 @@ function SubscriptionPage() {
   const [subscriptionStatus, setSubscriptionStatus] = useState('free');
   const [liveSessionsRemaining, setLiveSessionsRemaining] = useState(0);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
-    if (!auth) {
-      navigate('/login');
-    }
+    if (!auth) navigate('/login');
   }, [auth]);
 
   useEffect(() => {
@@ -79,8 +89,6 @@ function SubscriptionPage() {
     }
   ];
 
-
-  // Add `total` key dynamically (for clarity)
   plans.forEach(plan => {
     plan.total = parseFloat((plan.basePrice + plan.gst).toFixed(2));
   });
@@ -92,7 +100,7 @@ function SubscriptionPage() {
       const response = await fetch(`${API_BASE_URL}/create_order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: plan.total })  // backend multiplies by 100
+        body: JSON.stringify({ amount: plan.total })
       });
 
       const { order_id, razorpay_key } = await response.json();
@@ -142,8 +150,10 @@ function SubscriptionPage() {
   };
 
   return (
-    <Box p={5}>
-      <Typography variant="h4" align="center" gutterBottom>Subscription Plans</Typography>
+    <Box px={{ xs: 2, sm: 5 }} py={{ xs: 3, sm: 5 }}>
+      <Typography variant={isMobile ? 'h5' : 'h4'} align="center" gutterBottom>
+        Subscription Plans
+      </Typography>
       <Typography variant="body1" align="center" sx={{ mb: 4 }}>
         Upgrade your plan to unlock unlimited mock interviews and premium features.
       </Typography>
@@ -158,29 +168,39 @@ function SubscriptionPage() {
             >
               <Card
                 elevation={currentPlan === plan.title ? 8 : 3}
-                sx={{ border: currentPlan === plan.title ? '2px solid #1976d2' : '1px solid #ddd' }}
+                sx={{
+                  border: currentPlan === plan.title ? '2px solid #1976d2' : '1px solid #ddd',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}
               >
-                <CardContent sx={{ minHeight: 280 }}>
-                  <Typography variant="h5" gutterBottom align="center">{plan.title}</Typography>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom align="center">{plan.title}</Typography>
                   <Typography variant="h4" align="center" color="primary" gutterBottom>
                     {plan.basePrice === 0 ? '₹0' : `₹${plan.basePrice} + GST`}
                   </Typography>
-                  <Box component="ul" sx={{ listStyle: 'none', p: 0 }}>
+                  <Box component="ul" sx={{ listStyle: 'none', p: 0, mt: 2 }}>
                     {plan.features.map((feature, idx) => (
-                      <Typography key={idx} component="li" sx={{ mb: 1, textAlign: 'center' }}>
+                      <Typography key={idx} component="li" sx={{ mb: 1, textAlign: 'center', fontSize: '0.95rem' }}>
                         ✅ {feature}
                       </Typography>
                     ))}
                   </Box>
                 </CardContent>
-                <CardActions sx={{ justifyContent: 'center', mb: 2 }}>
+                <CardActions sx={{ justifyContent: 'center', mb: 2, px: 2 }}>
                   {currentPlan === plan.title ? (
-                    <Button variant="contained" color="success" disabled>You are on this plan</Button>
+                    <Button variant="contained" color="success" disabled fullWidth={isMobile}>
+                      You are on this plan
+                    </Button>
                   ) : (
                     plan.basePrice === 0 ? (
-                      <Button variant="outlined" disabled>You are on this plan</Button>
+                      <Button variant="outlined" disabled fullWidth={isMobile}>
+                        You are on this plan
+                      </Button>
                     ) : (
-                      <Button variant="outlined" color="primary" onClick={() => handleSubscribe(plan)}>
+                      <Button variant="outlined" color="primary" onClick={() => handleSubscribe(plan)} fullWidth={isMobile}>
                         Subscribe
                       </Button>
                     )
@@ -192,7 +212,7 @@ function SubscriptionPage() {
         ))}
       </Grid>
 
-      <Box textAlign="center" mt={4}>
+      <Box textAlign="center" mt={5}>
         <Button variant="contained" color="secondary" onClick={() => navigate('/dashboard')}>
           Back to Dashboard
         </Button>

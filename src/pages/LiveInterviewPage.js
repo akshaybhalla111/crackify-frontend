@@ -502,7 +502,7 @@ function LiveInterviewPage() {
       <Box flex="1.15" display="flex" flexDirection="column" ref={answerBoxRef} sx={{ minWidth: 0, maxWidth: '100%', overflow: 'hidden' }}>
         <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ mb: 2, borderBottom: '1px solid #ddd', pb: 1 }}>
           <Box display="flex" alignItems="center" gap={1}>
-            <img src="/logo.jpg" alt="Crackify AI" style={{ height: 28 }} />
+            <img src="/logo.png" alt="Crackify AI" style={{ height: 28 }} />
             <Typography variant="h6" sx={{ fontWeight: 600 }}>Crackify AI</Typography>
           </Box>
         </Box>

@@ -11,7 +11,9 @@ import {
   TableRow,
   Paper,
   Card,
-  CardContent
+  CardContent,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useAuth } from '../AuthContext';
@@ -23,6 +25,9 @@ function UserProfilePage() {
   const [paymentHistory, setPaymentHistory] = useState([]);
   const [subscriptionStatus, setSubscriptionStatus] = useState('');
   const [liveSessionsRemaining, setLiveSessionsRemaining] = useState(0);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   let userEmail = 'Guest';
   if (auth) {
@@ -63,10 +68,12 @@ function UserProfilePage() {
   }, [auth]);
 
   return (
-    <Box p={5}>
+    <Box px={{ xs: 2, sm: 5 }} py={{ xs: 3, sm: 5 }}>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        <Typography variant="h4" gutterBottom>User Profile</Typography>
-        <Typography variant="h6" gutterBottom color="primary">Hi, {userEmail?.split('@')[0]} 👋</Typography>
+        <Typography variant={isMobile ? 'h5' : 'h4'} gutterBottom>User Profile</Typography>
+        <Typography variant={isMobile ? 'body1' : 'h6'} gutterBottom color="primary">
+          Hi, {userEmail?.split('@')[0]} 👋
+        </Typography>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -83,31 +90,33 @@ function UserProfilePage() {
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-        <Typography variant="h5" gutterBottom>Payment History</Typography>
+        <Typography variant={isMobile ? 'h6' : 'h5'} gutterBottom>Payment History</Typography>
 
         {!Array.isArray(paymentHistory) || paymentHistory.length === 0 ? (
           <Typography>No payments made yet.</Typography>
         ) : (
-          <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
-            <Table>
-              <TableHead sx={{ backgroundColor: '#f0f0f0' }}>
-                <TableRow>
-                  <TableCell><strong>Plan</strong></TableCell>
-                  <TableCell><strong>Amount</strong></TableCell>
-                  <TableCell><strong>Date</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paymentHistory.map((p, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{p.plan?.toUpperCase?.() || 'N/A'}</TableCell>
-                    <TableCell>₹{p.amount}</TableCell>
-                    <TableCell>{p.timestamp}</TableCell>
+          <Box sx={{ overflowX: 'auto' }}>
+            <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3, minWidth: 360 }}>
+              <Table>
+                <TableHead sx={{ backgroundColor: '#f0f0f0' }}>
+                  <TableRow>
+                    <TableCell><strong>Plan</strong></TableCell>
+                    <TableCell><strong>Amount</strong></TableCell>
+                    <TableCell><strong>Date</strong></TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {paymentHistory.map((p, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{p.plan?.toUpperCase?.() || 'N/A'}</TableCell>
+                      <TableCell>₹{p.amount}</TableCell>
+                      <TableCell>{p.timestamp}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
         )}
       </motion.div>
 
@@ -116,11 +125,13 @@ function UserProfilePage() {
           variant="contained"
           color="primary"
           onClick={() => window.location.href = '/subscription'}
+          fullWidth={isMobile}
           sx={{
             px: 4,
             py: 1.5,
             transition: '0.3s',
-            '&:hover': { backgroundColor: '#1565c0' }
+            '&:hover': { backgroundColor: '#1565c0' },
+            maxWidth: 300
           }}
         >
           Manage Subscription

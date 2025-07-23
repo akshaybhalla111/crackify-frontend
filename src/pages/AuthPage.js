@@ -1,22 +1,22 @@
+
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
+import { jwtDecode } from 'jwt-decode';
 import {
   Snackbar,
-  Alert,
-  TextField,
-  Button,
-  Box,
-  Typography,
+  Alert
 } from '@mui/material';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-import './AuthPage.css';
+import {
+  Input
+} from '../components/ui/input';
+import { Button } from '../components/ui/button';
+import { Label } from '../components/ui/label';
 import { API_BASE_URL } from "../config";
 
-
-function AuthPage() {
+export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,36 +25,25 @@ function AuthPage() {
   const [showForgot, setShowForgot] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [toast, setToast] = useState({ open: false, msg: '', severity: 'info' });
-
   const { setAuth, setUserEmail } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const isValidPassword = (pwd) => {
-    const hasLetters = /[a-zA-Z]/.test(pwd);
-    const hasNumbers = /[0-9]/.test(pwd);
-    return pwd.length >= 8 && hasLetters && hasNumbers;
-  };
+  const isValidPassword = (pwd) => /[a-zA-Z]/.test(pwd) && /[0-9]/.test(pwd) && pwd.length >= 8;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!email || !password || (!isLogin && !confirmPassword)) {
-      setToast({ open: true, msg: 'Please fill all required fields.', severity: 'error' });
-      return;
+      return setToast({ open: true, msg: 'Please fill all required fields.', severity: 'error' });
     }
-
     if (!isLogin && password !== confirmPassword) {
-      setToast({ open: true, msg: 'Passwords do not match.', severity: 'error' });
-      return;
+      return setToast({ open: true, msg: 'Passwords do not match.', severity: 'error' });
     }
-
     if (!isLogin && !isValidPassword(password)) {
-      setToast({
+      return setToast({
         open: true,
         msg: 'Password must be at least 8 characters long and include both letters and numbers.',
-        severity: 'error',
+        severity: 'error'
       });
-      return;
     }
 
     try {
@@ -62,7 +51,6 @@ function AuthPage() {
         const formData = new URLSearchParams();
         formData.append('username', email);
         formData.append('password', password);
-
         const res = await axios.post(`${API_BASE_URL}/login`, formData);
         setAuth(res.data.access_token);
         setUserEmail(email);
@@ -81,25 +69,20 @@ function AuthPage() {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
       const decoded = jwtDecode(credentialResponse.credential);
-      const email = decoded.email;
-
-      const res = await axios.post(`${API_BASE_URL}/login_google`, { email });
+      const res = await axios.post(`${API_BASE_URL}/login_google`, { email: decoded.email });
       setAuth(res.data.access_token);
-      setUserEmail(email);
+      setUserEmail(decoded.email);
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       setToast({ open: true, msg: 'Google login failed.', severity: 'error' });
     }
   };
 
   const handleSendReset = async () => {
-    if (!resetEmail) {
-      setToast({ open: true, msg: 'Enter your email to reset password.', severity: 'warning' });
-      return;
-    }
+    if (!resetEmail) return setToast({ open: true, msg: 'Enter your email.', severity: 'warning' });
     try {
       await axios.post(`${API_BASE_URL}/send_reset_link`, { email: resetEmail });
-      setToast({ open: true, msg: '✅ Reset link sent to your email.', severity: 'success' });
+      setToast({ open: true, msg: '✅ Reset link sent.', severity: 'success' });
       setTimeout(() => {
         setShowForgot(false);
         setResetEmail('');
@@ -111,97 +94,71 @@ function AuthPage() {
   };
 
   return (
-    <div className="auth-page-body">
-      <div className="container">
-        <div className="left-panel">
-          <div className="logo-only">
-            <div className="logo-wrapper">
-              <img src="/logo.jpg" alt="Crackify Logo" className="auth-logo-img" />
-            </div>
+    <div className="min-h-screen w-full bg-gray-50 lg:grid lg:grid-cols-2">
+      <div className="flex items-center justify-center p-6 lg:p-12">
+        <form onSubmit={handleSubmit} className="mx-auto w-full max-w-md space-y-6">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold">{isLogin ? 'Welcome Back' : 'Create Account'}</h1>
+            <p className="text-sm text-muted-foreground">
+              {isLogin ? 'Login to access your dashboard' : 'Sign up to start your journey'}
+            </p>
           </div>
-          <div className="tagline">
-            Master your interviews with AI-powered real-time assistance
-          </div>
-          <div className="features">
-            <div className="feature"><div className="feature-icon">✓</div><span>Real-time coaching</span></div>
-            <div className="feature"><div className="feature-icon">✓</div><span>Smart suggestions</span></div>
-            <div className="feature"><div className="feature-icon">✓</div><span>Analytics</span></div>
-          </div>
-        </div>
-
-        <div className="right-panel">
-          <div className="form-tabs">
-            <button className={`form-tab ${isLogin ? 'active' : ''}`} onClick={() => setIsLogin(true)}>Login</button>
-            <button className={`form-tab ${!isLogin ? 'active' : ''}`} onClick={() => setIsLogin(false)}>Register</button>
-          </div>
-
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="form-header">
-              <h2 className="form-title">{isLogin ? 'Welcome back' : 'Create account'}</h2>
-              <p className="form-subtitle">{isLogin ? 'Sign in to your account' : 'Start your journey with Crackify AI'}</p>
-            </div>
-
+          <GoogleLogin
+            onSuccess={handleGoogleLoginSuccess}
+            onError={() => setToast({ open: true, msg: 'Google login failed.', severity: 'error' })}
+            useOneTap
+          />
+          <div className="grid gap-2">
             {!isLogin && (
-              <div className="form-group">
-                <label className="form-label">Full Name</label>
-                <input type="text" className="form-input" value={name} onChange={(e) => setName(e.target.value)} />
+              <div className="grid gap-1">
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
             )}
-
-            <div className="form-group">
-              <label className="form-label">Email</label>
-              <input type="email" className="form-input" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <div className="grid gap-1">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
-
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <input type="password" className="form-input" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <div className="grid gap-1">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
-
             {!isLogin && (
-              <div className="form-group">
-                <label className="form-label">Confirm Password</label>
-                <input type="password" className="form-input" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              <div className="grid gap-1">
+                <Label htmlFor="confirm">Confirm Password</Label>
+                <Input id="confirm" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
             )}
-
             {isLogin && (
-              <div className="forgot-password">
-                <a href="#" onClick={(e) => { e.preventDefault(); setShowForgot(true); }}>Forgot your password?</a>
+              <div className="text-right text-sm text-blue-600 cursor-pointer" onClick={() => setShowForgot(true)}>
+                Forgot your password?
               </div>
             )}
-
-            <button type="submit" className="primary-button">{isLogin ? 'Sign In' : 'Create Account'}</button>
-
-            <div className="switch-form">
-              {isLogin ? (
-                <>Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); setIsLogin(false); }}>Register</a></>
-              ) : (
-                <>Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); setIsLogin(true); }}>Login</a></>
-              )}
+            <Button type="submit" className="w-full">{isLogin ? 'Login' : 'Register'}</Button>
+            <div className="text-center text-sm">
+              {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
+              <span className="text-blue-600 cursor-pointer" onClick={() => setIsLogin(!isLogin)}>
+                {isLogin ? 'Register' : 'Login'}
+              </span>
             </div>
-          </form>
+            {showForgot && (
+              <div className="grid gap-2 pt-4">
+                <Label>Reset Password</Label>
+                <Input placeholder="Enter your email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} />
+                <Button onClick={handleSendReset} type="button">Send Reset Link</Button>
+              </div>
+            )}
+          </div>
+        </form>
+      </div>
 
-          <Box mt={2} textAlign="center">
-            <GoogleLogin
-              onSuccess={handleGoogleLoginSuccess}
-              onError={() => setToast({ open: true, msg: 'Google login failed.', severity: 'error' })}
-              useOneTap
-            />
-          </Box>
-
-          {showForgot && (
-            <Box mt={3}>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>Reset Password</Typography>
-              <TextField
-                fullWidth
-                label="Enter your registered email"
-                value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
-              />
-              <Button variant="contained" sx={{ mt: 2 }} onClick={handleSendReset}>Send Reset Link</Button>
-            </Box>
-          )}
+      <div className="hidden lg:flex lg:items-center lg:justify-center bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 text-white p-12 relative">
+        <div className="text-center space-y-6">
+          <img src="/logo.jpg" alt="Crackify Logo" className="h-24 mx-auto" />
+          <h2 className="text-4xl font-bold">Ace Every Interview.</h2>
+          <p className="text-xl text-blue-100 max-w-md mx-auto">
+            Get real-time AI assistance for mock interviews and live calls.
+          </p>
         </div>
       </div>
 
@@ -218,5 +175,3 @@ function AuthPage() {
     </div>
   );
 }
-
-export default AuthPage;

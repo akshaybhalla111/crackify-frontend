@@ -1,7 +1,14 @@
-// src/pages/LiveSetupFormPage.js
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import { Box, Typography, TextField, Button, MenuItem, CircularProgress } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  CircularProgress,
+  useTheme,
+  useMediaQuery
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { useUI } from '../UIContext';
@@ -20,20 +27,17 @@ function LiveSetupFormPage() {
   const [resume, setResume] = useState(null);
   const [jobDescription, setJobDescription] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
-    if (auth) {
-      fetchSubscriptionStatus();  // ✅ refresh session count on every mount
-    }
+    if (auth) fetchSubscriptionStatus();
   }, [auth]);
 
   useEffect(() => {
-    if (liveSessionsRemaining <= 0) {
-      navigate('/subscription');
-    }
+    if (liveSessionsRemaining <= 0) navigate('/subscription');
   }, [liveSessionsRemaining, navigate]);
-
 
   const handleStartLiveInterview = async () => {
     if (!company || !role) return;
@@ -54,12 +58,9 @@ function LiveSetupFormPage() {
       });
 
       const data = await response.json();
-      
-      
-      localStorage.setItem('live_setup_data', JSON.stringify(data)); // ✅ Save for retrieval in /live-interview
-      
+      localStorage.setItem('live_setup_data', JSON.stringify(data));
       navigate('/live-interview');
-      await fetchSubscriptionStatus(); // ✅ refresh live session count immediately
+      await fetchSubscriptionStatus();
     } catch (err) {
       console.error('Live setup failed', err);
     } finally {
@@ -68,8 +69,21 @@ function LiveSetupFormPage() {
   };
 
   return (
-    <Box maxWidth={500} mx="auto" mt={5} p={3} bgcolor="#fff" borderRadius={2} boxShadow={3}>
-      <Typography variant="h5" gutterBottom>Live Interview Setup</Typography>
+    <Box
+      sx={{
+        maxWidth: 500,
+        width: '100%',
+        mx: 'auto',
+        mt: 5,
+        p: { xs: 2, sm: 3 },
+        bgcolor: '#fff',
+        borderRadius: 2,
+        boxShadow: 3
+      }}
+    >
+      <Typography variant={isMobile ? 'h6' : 'h5'} gutterBottom>
+        Live Interview Setup
+      </Typography>
 
       <TextField
         fullWidth
@@ -94,15 +108,33 @@ function LiveSetupFormPage() {
         sx={{ mb: 2 }}
       >
         {languages.map((lang) => (
-          <MenuItem key={lang} value={lang}>{lang}</MenuItem>
+          <MenuItem key={lang} value={lang}>
+            {lang}
+          </MenuItem>
         ))}
       </TextField>
 
-      <Typography variant="body2" gutterBottom>Upload Resume (optional)</Typography>
-      <input type="file" accept=".pdf,.doc,.docx" onChange={(e) => setResume(e.target.files[0])} style={{ marginBottom: '16px' }} />
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="body2" gutterBottom>
+          Upload Resume (optional)
+        </Typography>
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx"
+          onChange={(e) => setResume(e.target.files[0])}
+        />
+      </Box>
 
-      <Typography variant="body2" gutterBottom>Upload Job Description (optional)</Typography>
-      <input type="file" accept=".pdf,.doc,.docx" onChange={(e) => setJobDescription(e.target.files[0])} />
+      <Box>
+        <Typography variant="body2" gutterBottom>
+          Upload Job Description (optional)
+        </Typography>
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx"
+          onChange={(e) => setJobDescription(e.target.files[0])}
+        />
+      </Box>
 
       <Box mt={3}>
         <Button

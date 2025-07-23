@@ -1,29 +1,42 @@
 import React from 'react';
-import {
-  Drawer, List, ListItem, ListItemIcon, ListItemText,
-  Box, Typography, Avatar, Button, Divider, Chip
-} from '@mui/material';
-import {
-  Dashboard as DashboardIcon,
-  Videocam as InterviewIcon,
-  History as SessionsIcon,
-} from '@mui/icons-material';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Avatar, Menu, MenuItem } from '@mui/material';
 import { useAuth } from './AuthContext';
 import { useUI } from './UIContext';
-import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { Menu, MenuItem } from '@mui/material';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import {
+  Home, Video, Upload, History, Settings, HelpCircle, Brain, X, LogOut, UserCircle
+} from 'lucide-react';
+import { Button } from './components/ui/button';
 
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+  return (
+    <>
+      {/* Mobile Sidebar */}
+      <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
+        <div className="fixed inset-0 bg-gray-600/75" onClick={() => setSidebarOpen(false)}></div>
+        <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white/95 backdrop-blur-xl border-r border-blue-200 shadow-2xl">
+          <SidebarContent setSidebarOpen={setSidebarOpen} />
+        </div>
+      </div>
 
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div className="flex grow flex-col justify-between overflow-y-auto bg-white/80 backdrop-blur-xl border-r border-blue-200 px-6 pb-4 shadow-lg">
+          <SidebarContent setSidebarOpen={setSidebarOpen} />
+        </div>
+      </div>
+    </>
+  );
+};
 
+export default Sidebar;
 
-const Sidebar = () => {
+function SidebarContent({ setSidebarOpen }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { auth, setAuth } = useAuth();
   const { subscriptionStatus } = useUI();
-  const navigate = useNavigate();
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuOpen = Boolean(anchorEl);
 
@@ -32,18 +45,10 @@ const Sidebar = () => {
     try {
       const decoded = jwtDecode(auth);
       userEmail = decoded.sub || 'User';
-    } catch (err) {
-      console.error('Invalid token', err);
+    } catch (e) {
+      console.error('JWT decoding failed');
     }
   }
-
-  const navItems = [
-    { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-    { label: 'Mock Interview', icon: <InterviewIcon />, path: '/mock-setup' },
-    { label: 'Live Interview', icon: <InterviewIcon />, path: '/live-setup' },
-    { label: 'Sessions', icon: <SessionsIcon />, path: '/sessions' },
-    // { label: 'Payment History', icon: <PaymentIcon />, path: '/payment-history' },
-  ];
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -51,190 +56,86 @@ const Sidebar = () => {
     navigate('/login');
   };
 
+  const navItems = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Mock Interview', href: '/mock-setup', icon: Brain },
+    { name: 'Live Interview', href: '/live-setup', icon: Video },
+    { name: 'Upload Resume', href: '/resume', icon: Upload },
+    { name: 'Sessions', href: '/sessions', icon: History },
+    { name: 'Support', href: '/support', icon: HelpCircle }
+  ];
+
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: 240,
-          boxSizing: 'border-box',
-          backgroundColor: '#ffffff',
-          borderRight: '1px solid #eee'
-        }
-      }}
-    >
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        {/* Logo */}
-        <Box
-          sx={{
-            p: 2,
-            borderBottom: '1px solid #eee',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textAlign: 'center',
-            gap: 0.5, // spacing between logo & text
-          }}
-        >
-          <Box
-            component="img"
-            src="/logo.jpg" // or imported `logo`
-            alt="Crackify Logo"
-            sx={{
-              width: 100,
-              height: 100,
-              borderRadius: '12px',
-              objectFit: 'cover',
-              transition: 'transform 0.3s ease-in-out',
-              '&:hover': {
-                transform: 'scale(1.07)',
-              },
-              animation: 'fadeInZoom 0.4s ease-in-out',
-            }}
+    <>
+      {/* Logo */}
+      <div className="flex h-20 items-center justify-between">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
+          <img
+            src="/logo.jpg"
+            alt="Crackify AI"
+            className="h-14 w-14 object-contain"
           />
-
-          <Typography
-            variant="caption"
-            sx={{
-              fontSize: '0.8rem',
-              color: '#666',
-              fontStyle: 'italic',
-              fontWeight: 500,
-              whiteSpace: 'nowrap',       // ⬅️ force one line
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxWidth: '140px',
-            }}
+          <span className="text-lg sm:text-xl font-bold text-blue-700">Crackify AI</span>
+        </div>
+        {setSidebarOpen && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(false)}
           >
-            Interview Assistant
-          </Typography>
+            <X className="h-6 w-6" />
+          </Button>
+        )}
+      </div>
 
-          <style>
-            {`
-              @keyframes fadeInZoom {
-                0% {
-                  opacity: 0;
-                  transform: scale(0.92);
-                }
-                100% {
-                  opacity: 1;
-                  transform: scale(1);
-                }
-              }
-            `}
-          </style>
-        </Box>
-
-        {/* Navigation */}
-        <List sx={{ flexGrow: 1 }}>
-          {navItems.map((item, index) => (
-            <ListItem
-              key={index}
-              button
-              onClick={() => navigate(item.path)}
-              selected={window.location.pathname === item.path}
-              sx={{
-                cursor: 'pointer',
-                transition: '0.3s',
-                '&:hover': {
-                  backgroundColor: '#f5f5f5',
-                  transform: 'scale(1.02)'
-                },
-                '&.Mui-selected': {
-                  backgroundColor: '#e3f2fd',
-                  fontWeight: 600
-                }
-              }}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
-            </ListItem>
+      {/* Navigation */}
+      <nav className="flex flex-1 flex-col">
+        <ul className="-mx-2 space-y-1">
+          {navItems.map((item) => (
+            <li key={item.name}>
+              <Link
+                to={item.href}
+                className={`group flex items-center gap-x-3 rounded-xl p-3 text-sm font-semibold leading-6 transition-all duration-200 hover:shadow-md hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700 ${
+                  location.pathname === item.href ? 'bg-blue-50 text-blue-700 shadow' : 'text-gray-700'
+                }`}
+              >
+                <item.icon className="h-6 w-6 shrink-0 group-hover:text-blue-600 transition-colors duration-200" />
+                {item.name}
+              </Link>
+            </li>
           ))}
-        </List>
+        </ul>
 
-        <Divider />
-        
-        <Box sx={{ mt: 'auto', p: 2, pb: 1 }}></Box>
-        {/* User Info + Plan */}
-          <Box
-            sx={{
-              p: 2,
-              textAlign: 'center',
-              cursor: 'pointer',
-              backgroundColor: '#f9f9f9',
-              borderRadius: 2,
-              mx: 2,
-              my: 1,
-              boxShadow: '0px 1px 5px rgba(0,0,0,0.05)',
-              '&:hover': { backgroundColor: '#f1f1f1' }
-            }}
-            onClick={(e) => setAnchorEl(e.currentTarget)}
-          >
-            <Avatar sx={{ mx: 'auto', mb: 1 }}>{userEmail[0]?.toUpperCase() || 'U'}</Avatar>
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 500,
-                fontSize: '0.9rem',
-                color: '#333',
-                textAlign: 'center',
-                wordBreak: 'break-all',
-              }}
-            >
-              {userEmail}
-            </Typography>
+        {/* Upgrade Card */}
+        {/* Plan Status / Upgrade Logic */}
+        <li className="mt-6">
+          <div className="pt-6">
+            <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-4 text-white shadow-xl text-center">
+              <p className="text-sm font-semibold mb-1">{userEmail}</p>
+              <p className="text-xs text-blue-100 mb-2">
+                {subscriptionStatus
+                  ? `${subscriptionStatus.charAt(0).toUpperCase()}${subscriptionStatus.slice(1)} Plan`
+                  : 'Free Plan'}
+              </p>
 
-            {subscriptionStatus && (
-              <Chip
-                label={`${subscriptionStatus.charAt(0).toUpperCase()}${subscriptionStatus.slice(1)} Plan`}
-                size="small"
-                color={
-                  subscriptionStatus === 'pro'
-                    ? 'success'
-                    : subscriptionStatus === 'basic'
-                    ? 'primary'
-                    : 'default'
-                }
-                sx={{
-                  mt: 1,
-                  fontWeight: 600,
-                  borderRadius: '8px',
-                  px: 1.5,
-                  boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.1)'
-                }}
-              />
-            )}
-          </Box>
-
-          <Menu
-            anchorEl={anchorEl}
-            open={menuOpen}
-            onClose={() => setAnchorEl(null)}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-          >
-            <MenuItem
-              onClick={() => {
-                navigate('/profile');
-                setAnchorEl(null);
-              }}
-            >
-              <AccountCircleIcon sx={{ fontSize: 20, mr: 1 }} /> Profile
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                setAnchorEl(null);
-                handleLogout();
-              }}
-            >
-              <ExitToAppIcon sx={{ fontSize: 20, mr: 1 }} /> Logout
-            </MenuItem>
-          </Menu>
-        </Box>
-    </Drawer>
+              {!subscriptionStatus || subscriptionStatus === 'free' ? (
+                <Button
+                  className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30 text-sm py-2"
+                  onClick={() => navigate('/subscription')}
+                >
+                  Upgrade Now
+                </Button>
+              ) : (
+                <div className="text-xs font-medium text-green-200 mt-2">
+                  ✅ You’re on {subscriptionStatus.charAt(0).toUpperCase()}
+                  {subscriptionStatus.slice(1)} Plan
+                </div>
+              )}
+            </div>
+          </div>
+        </li>
+      </nav>
+    </>
   );
-};
-
-export default Sidebar;
+}

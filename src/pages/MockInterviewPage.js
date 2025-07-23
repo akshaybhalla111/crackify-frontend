@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../config";
 import { WS_BASE_URL } from "../config";
 
+
 const buttonClickSound = new Audio('/click.mp3');
 
 function MockInterviewPage() {
@@ -30,8 +31,7 @@ function MockInterviewPage() {
   const [shortcutOverlayOpen, setShortcutOverlayOpen] = useState(false);
   const [trialEnded, setTrialEnded] = useState(false);
   const [trialModalOpen, setTrialModalOpen] = useState(false);
-  const [trialTimeLeft, setTrialTimeLeft] = useState(600);
-
+  const [trialTimeLeft, setTrialTimeLeft] = useState(subscriptionStatus === 'free' ? 60 : 600);
 
   const videoRef = useRef(null);
   const scrollBottomRef = useRef(null);
@@ -43,7 +43,7 @@ function MockInterviewPage() {
   const reconnectAttemptsRef = useRef(0);
   const readerRef = useRef(null);
   const timerIntervalRef = useRef(null);
-  const sessionEndedRef = useRef(false); // ✅ New flag prevent reconnection
+  const sessionEndedRef = useRef(false); // ✅ New flag to prevent reconnection
   const hasEndedRef = useRef(false);
 
 
@@ -349,7 +349,7 @@ function MockInterviewPage() {
 
   const startInterviewWithAudio = async () => {
     await cleanup();
-    setTrialTimeLeft(600);
+    setTrialTimeLeft(subscriptionStatus === 'free' ? 60 : 600);
     sessionEndedRef.current = false;
 
     try {
@@ -574,7 +574,7 @@ function MockInterviewPage() {
           sx={{ mb: 2, borderBottom: '1px solid #ddd', pb: 1 }}
         >
           <Box display="flex" alignItems="center" gap={1}>
-            <img src="/logo.jpg" alt="Crackify AI" style={{ height: 28 }} />
+            <img src="/logo.png" alt="Crackify AI" style={{ height: 28 }} />
             <Typography variant="h6" sx={{ fontWeight: 600 }}>Crackify AI</Typography>
           </Box>
         </Box>
